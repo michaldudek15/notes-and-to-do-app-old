@@ -1,93 +1,190 @@
 <?php
+/**
+ * Note entity.
+ */
 
 namespace App\Entity;
 
 use App\Repository\NoteRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+*Class Note.
+ *
+ * @psalm-suppress MissingConstructor
+ */
 #[ORM\Entity(repositoryClass: NoteRepository::class)]
 #[ORM\Table(name: 'notes')]
 class Note
 {
+
+    /**
+    * Primary key.
+     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $createdAt = null;
+    /**
+     * Created at.
+     *
+     * @psalm-suppress PropertyNotSetInConstructor
+     */
+    #[ORM\Column(type: 'datetime_immutable')]
+    private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $updatedAt = null;
+    /**
+     * Updated at.
+     *
+     * @psalm-suppress PropertyNotSetInConstructor
+     */
+    #[ORM\Column(type: 'datetime_immutable')]
+    private ?\DateTimeImmutable $updatedAt = null;
 
-    #[ORM\Column(length: 255)]
+    /**
+     * Title.
+     */
+    #[ORM\Column(type: 'string', length: 255)]
     private ?string $title = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[Orm\Column(type: 'text', length: 65535)]
     private ?string $body = null;
 
-    #[ORM\ManyToOne]
+    /**
+     * Category.
+     *
+     * @var Category
+     */
+    #[ORM\ManyToOne(targetEntity: Category::class, fetch: 'EXTRA_LAZY')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Category $category = null;
 
+
+    /**
+     * Getter for Id.
+     *
+     * @return integer|null Id
+     */
     public function getId(): ?int
     {
         return $this->id;
-    }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    }//end getId()
+
+
+    /**
+     * Getter for created at.
+     *
+     * @return \DateTimeImmutable|null Created at
+     */
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
-    }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    }//end getCreatedAt()
+
+
+    /**
+     * Setter for created at.
+     *
+     * @param \DateTimeImmutable|null $createdAt Created at
+     */
+    public function setCreatedAt(?\DateTimeImmutable $createdAt): void
     {
         $this->createdAt = $createdAt;
 
-        return $this;
-    }
+    }//end setCreatedAt()
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+
+    /**
+     * Getter for updated at.
+     *
+     * @return \DateTimeImmutable|null Updated at
+     */
+    public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
-    }
 
-    public function setUpdatedAt(\DateTimeInterface $updatedAt): static
+    }//end getUpdatedAt()
+
+
+    /**
+     * Setter for updated at.
+     *
+     * @param \DateTimeImmutable|null $updatedAt Updated at
+     */
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
 
-        return $this;
-    }
+    }//end setUpdatedAt()
 
+
+    /**
+     * Getter for title.
+     *
+     * @return string|null Title
+     */
     public function getTitle(): ?string
     {
         return $this->title;
-    }
 
-    public function setTitle(string $title): static
+    }//end getTitle()
+
+
+    /**
+     * Setter for title.
+     *
+     * @param string|null $title Title
+     */
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
 
-        return $this;
     }
 
+
+    /**
+     * Getter for body.
+     *
+     * @return string|null Body
+     */
     public function getBody(): ?string
     {
         return $this->body;
+
     }
 
-    public function setBody(string $body): static
+
+    /**
+     * Setter for body.
+     *
+     * @param  string|null $body
+     */
+    public function setBody(?string $body): void
     {
         $this->body = $body;
 
-        return $this;
     }
 
+    /**
+     * Getter for category.
+     *
+     * @return Category|null
+     */
     public function getCategory(): ?Category
     {
         return $this->category;
     }
 
+    /**
+     * Setter for category.
+     *
+     * @param Category|null $category
+     *
+     * @return $this
+     */
     public function setCategory(?Category $category): static
     {
         $this->category = $category;

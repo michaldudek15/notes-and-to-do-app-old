@@ -5,8 +5,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Note;
 use App\Repository\NoteRepository;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -27,15 +30,15 @@ class NoteController extends AbstractController
         name: 'note_index',
         methods: 'GET'
     )]
-    public function index(NoteRepository $repository): Response
+    public function index(Request $request, NoteRepository $repository, PaginatorInterface $paginator): Response
     {
-        $notes = $repository->findAll();
-
-        return $this->render(
-            'note/index.html.twig',
-            ['notes' => $notes]
+        $pagination = $paginator->paginate(
+            $repository->queryAll(),
+            $request->query->getInt('page', 1),
+            NoteRepository::PAGINATOR_ITEMS_PER_PAGE
         );
 
+        return $this->render('note/index.html.twig', ['pagination' => $pagination]);
     }
 
     /**
@@ -48,13 +51,13 @@ class NoteController extends AbstractController
 
     #[Route(
         '/{id}',
-        name: 'record_show',
+        name: 'note_show',
         requirements: ['id' => '[1-9]\d*'],
         methods: 'GET'
     )]
     public function show(NoteRepository $repository, int $id): Response
     {
-        $note = $repository->findOnyById($id);
+        $note = $repository->findOneById($id);
 
         return $this->render(
             'note/show.html.twig',
