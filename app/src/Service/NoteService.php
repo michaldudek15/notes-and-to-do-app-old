@@ -6,13 +6,20 @@
 namespace App\Service;
 
 use App\Repository\NoteRepository;
+use App\Repository\TaskRepository;
+use App\Entity\Note;
+use Doctrine\ORM\Exception\ORMException;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\OptimisticLockException;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 
 /**
- * Class NoteService.
+ * Class TaskService.
  */
 class NoteService implements NoteServiceInterface
+
 {
     /**
      * Items per page.
@@ -29,10 +36,12 @@ class NoteService implements NoteServiceInterface
      * Constructor.
      *
      * @param NoteRepository     $noteRepository Note repository
+     * @param TaskRepository     $taskRepository Task repository
      * @param PaginatorInterface $paginator      Paginator
      */
     public function __construct(private readonly NoteRepository $noteRepository, private readonly PaginatorInterface $paginator)
     {
+
     }
 
     /**
@@ -49,5 +58,32 @@ class NoteService implements NoteServiceInterface
             $page,
             self::PAGINATOR_ITEMS_PER_PAGE
         );
+    }
+    /**
+     * Save entity.
+     *
+     * @param Note $note Note entity
+     */
+    public function save(Note $note): void
+    {
+        $this->noteRepository->save($note);
+    }
+
+    /**
+     * Delete entity.
+     *
+     * @param Note $note Note entity
+     *
+     * @throws OptimisticLockException
+     * @throws ORMException
+     */
+    public function delete(Note $note): void
+    {
+        $this->noteRepository->delete($note);
+    }
+
+    public function canBeDeleted(Note $note): bool
+    {
+       return true;
     }
 }

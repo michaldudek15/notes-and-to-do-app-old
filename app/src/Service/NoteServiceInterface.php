@@ -22,4 +22,19 @@ interface NoteServiceInterface
      */
     public function getPaginatedList(int $page): PaginationInterface;
 
+    /**
+     * Save entity.
+     *
+     * @param Note $note Note entity
+     */
+    public function save(Note $note): void;
+
+    /**
+     * Delete entity.
+     *
+     * @param Note $note Note entity
+     */
+    public function delete(Note $note): void;
+    public function canBeDeleted(Note $note): bool;
+
 }
